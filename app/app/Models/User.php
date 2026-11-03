@@ -10,12 +10,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'phone'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    public function isAdmin(): bool { return $this->role === 'admin'; }
+    public function isBusiness(): bool { return $this->role === 'business'; }
+
+    public function businesses(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Business::class);
+    }
+
+    public function appointments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Appointment::class);
+    }
 
     /**
      * Get the attributes that should be cast.
